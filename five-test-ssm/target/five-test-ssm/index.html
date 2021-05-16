@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+</head>
+<body>
+
+    <form id="search">
+        姓名：<input type="text" name="sname"><br>
+        性别：<input name="sex"><br>
+        年龄：<input name="age">
+        <button type="button" id="searchBtn">查询</button>
+    </form>
+<table border="1" width="100%">
+    <thead>
+        <tr>
+            <td>编号</td>
+            <td>姓名</td>
+            <td>性别</td>
+            <td>年龄</td>
+            <td>操作</td>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+<button type="button" id="saveBean">新增</button>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.serializejson.min.js"></script>
+    <script type="text/javascript">
+        /* show(1,2);*/
+
+        function show(pageNum, pageSize) {
+
+             var name = $("input[name='sname']").val();
+             var sex = $("input[name='sex']").val();
+             var age = $("input[name='age']").val();
+            $.ajax({
+                url: "student/page?pageName=" + pageNum+"&pageSize="+pageSize+"&sname="+ name
+                +"&age="+age+"&sex="+sex,
+                type: "get",
+
+                dataType: "json",
+                success: function (btn) {
+                    $("tbody").empty();
+                    $("#pre").remove();
+                    $("#next").remove();
+                    $.each(btn.list, function (i, student) {
+                        $("tbody").append("<tr><td>" + student.sno + "</td><td>"
+                            + student.sname + "</td><td>"
+                            + student.sex + "</td><td>"
+                            + student.age + "</td><td>"
+                            + "<button type='button' id='updateBtn' onclick='goTo(" + student.sno + ")'>修改</button>"
+                            + "<button type='button' id='deleteBtn' onclick='deleteStudent(" + student.sno + ")'>删除</button></td></tr>");
+                    })
+                    $("#saveBean").after('<button type="button" id="pre" onclick="show(' + btn.prePage + ',' + btn.pageSize + ')">上一页</button>')
+                    + '<button type="button" id="next" onclick="show(' + btn.nextPage + ',' + btn.pageSize + ')">下一页</button>'
+
+                }
+            })
+
+        }
+
+        $("#searchBtn").click(function () {
+            show(1, 2)
+        })
+
+        $("#saveBean").click(function () {
+            window.location.href = "save.html"
+        })
+
+        function goTo(sno) {
+            window.location.href = "update.html?sno=" + sno;
+        }
+
+        function deleteStudent(sno) {
+            $.ajax({
+                url: "student/" + sno,
+                type: "post",
+                dataType: "json",
+                success: function (ret) {
+                    if (ret) {
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+</html>

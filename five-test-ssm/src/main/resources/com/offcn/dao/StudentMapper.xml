@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.offcn.dao.StudentMapper">
+    <select id="findAll" resultType="com.offcn.pojo.Student">
+        select * from student
+    </select>
+    <select id="findById" resultType="com.offcn.pojo.Student">
+        select * from student where sno=#{sno}
+    </select>
+    <select id="findByStudentQuery" resultType="com.offcn.pojo.Student">
+        select * from student
+        <where>
+            <if test="sname != null and sname !='' ">
+                sname = #{sname}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="sex != null and sex  =''">
+                and sex = #{age}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save">
+        insert into student values (null ,#{sname},#{sex},#{age})
+    </insert>
+
+    <update id="update">
+        update student
+        <set>
+            <if test="sname != null and sname !='' ">
+                sname = #{sname},
+            </if>
+            <if test="age != null">
+                 age = #{age},
+            </if>
+            <if test="sex != null and sex  =''">
+                 sex = #{age},
+            </if>
+        </set>
+        where sno=#{sno}
+    </update>
+
+    <delete id="delete">
+        delete from student where sno=#{sno}
+    </delete>
+</mapper>
